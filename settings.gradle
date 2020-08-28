@@ -1,0 +1,3 @@
+include ':fpsmonitor'
+include ':app'
+rootProject.name = "FpsMonitor"
