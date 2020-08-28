@@ -1,6 +1,7 @@
 package com.joeys.fpsmonitor
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.provider.Settings
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import android.widget.RelativeLayout
 
@@ -29,11 +31,13 @@ object FpsMonitor {
         private var app: Application? = null
         private var rootView: View? = null
         private var textView: View? = null
+        private var windowManager: WindowManager? = null
+        private val monitor = Monitor()
 
         fun install(application: Application): Core {
             app = application
             application.registerActivityLifecycleCallbacks(this)
-
+            windowManager = application.getSystemService(Context.WINDOW_SERVICE) as WindowManager
             layoutParams.apply {
                 width = LayoutParams.WRAP_CONTENT
                 height = LayoutParams.WRAP_CONTENT
@@ -50,10 +54,9 @@ object FpsMonitor {
             val inflater = LayoutInflater.from(application)
             rootView = inflater.inflate(R.layout.text_layout, RelativeLayout(application))
             textView = rootView?.findViewById(R.id.textview_watch)
+            watch {
 
-
-
-
+            }
             return this
         }
 
@@ -70,6 +73,15 @@ object FpsMonitor {
                 startOverlaySettingActivity()
                 return
             }
+            monitor.start()
+        }
+
+        fun stop() {
+            monitor.stop()
+        }
+
+        private fun watch(fpsWatch: FpsWatch) {
+            monitor.watch(fpsWatch)
         }
 
         private fun startOverlaySettingActivity() {
@@ -87,9 +99,6 @@ object FpsMonitor {
             return Build.VERSION.SDK_INT < 23 || Settings.canDrawOverlays(app)
         }
 
-        fun stop() {
-
-        }
 
     }
 }
