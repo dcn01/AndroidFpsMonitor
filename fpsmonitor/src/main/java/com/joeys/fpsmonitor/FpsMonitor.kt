@@ -13,6 +13,8 @@ import android.view.View
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import android.widget.RelativeLayout
+import android.widget.TextView
+import java.text.DecimalFormat
 
 
 object FpsMonitor {
@@ -30,9 +32,11 @@ object FpsMonitor {
         private val layoutParams: LayoutParams = LayoutParams()
         private var app: Application? = null
         private var rootView: View? = null
-        private var textView: View? = null
+        private var textView: TextView? = null
         private var windowManager: WindowManager? = null
         private val monitor = Monitor()
+        private val decimal = DecimalFormat("#.0' fps'")
+        private var isShowing = false
 
         fun install(application: Application): Core {
             app = application
@@ -54,8 +58,10 @@ object FpsMonitor {
             val inflater = LayoutInflater.from(application)
             rootView = inflater.inflate(R.layout.text_layout, RelativeLayout(application))
             textView = rootView?.findViewById(R.id.textview_watch)
-            watch {
-
+            watch { fps ->
+                textView?.let {
+                    it.text = decimal.format(fps)
+                }
             }
             return this
         }
@@ -74,10 +80,18 @@ object FpsMonitor {
                 return
             }
             monitor.start()
+            if (!isShowing) {
+                windowManager?.addView(rootView, layoutParams)
+                isShowing = true
+            }
         }
 
         fun stop() {
             monitor.stop()
+            if (isShowing) {
+                windowManager?.removeView(rootView)
+                isShowing = false
+            }
         }
 
         private fun watch(fpsWatch: FpsWatch) {
