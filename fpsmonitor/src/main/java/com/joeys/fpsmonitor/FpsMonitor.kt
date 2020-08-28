@@ -7,12 +7,16 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager.LayoutParams
+import android.widget.RelativeLayout
 
 
 object FpsMonitor {
 
     private val core = Core()
+
 
     //门面模式，隐藏所有细节
     fun install(application: Application): Core {
@@ -23,6 +27,8 @@ object FpsMonitor {
     class Core : ForegroundLifecycleCallback() {
         private val layoutParams: LayoutParams = LayoutParams()
         private var app: Application? = null
+        private var rootView: View? = null
+        private var textView: View? = null
 
         fun install(application: Application): Core {
             app = application
@@ -36,13 +42,18 @@ object FpsMonitor {
                 format = PixelFormat.TRANSLUCENT
                 gravity = Gravity.BOTTOM
                 x = 10
-
-
                 if (Build.VERSION.SDK_INT >= 26)
                     type = LayoutParams.TYPE_APPLICATION_OVERLAY
                 else
                     type = LayoutParams.TYPE_TOAST
             }
+            val inflater = LayoutInflater.from(application)
+            rootView = inflater.inflate(R.layout.text_layout, RelativeLayout(application))
+            textView = rootView?.findViewById(R.id.textview_watch)
+
+
+
+
             return this
         }
 
