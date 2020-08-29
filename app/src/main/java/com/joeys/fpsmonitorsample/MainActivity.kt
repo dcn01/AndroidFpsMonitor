@@ -46,6 +46,17 @@ class MainActivity : AppCompatActivity() {
                 Entity(R.drawable.pic5, "pic5"),
                 Entity(R.drawable.pic6, "pic6"),
                 Entity(R.drawable.pic7, "pic7"),
+                Entity(R.drawable.pic7, "pic7"),
+                Entity(R.drawable.pic7, "pic7"),
+                Entity(R.drawable.pic5, "pic7"),
+                Entity(R.drawable.pic7, "pic7"),
+                Entity(R.drawable.pic2, "pic7"),
+                Entity(R.drawable.pic7, "pic7"),
+                Entity(R.drawable.pic7, "pic7"),
+                Entity(R.drawable.pic1, "pic7"),
+                Entity(R.drawable.pic4, "pic7"),
+                Entity(R.drawable.pic7, "pic7"),
+                Entity(R.drawable.pic7, "pic7"),
                 Entity(R.drawable.pic8, "pic8")
             )
         recyclerview.adapter = adapter

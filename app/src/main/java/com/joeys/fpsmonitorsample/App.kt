@@ -1,12 +1,12 @@
 package com.joeys.fpsmonitorsample
 
 import android.app.Application
-import com.joeys.fpsmonitor.FpsMonitor
+import com.joeys.fpsmonitor.Monitor
 
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        FpsMonitor.install(this)
+        Monitor.install(this)
     }
 }

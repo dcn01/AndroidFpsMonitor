@@ -1,45 +1,69 @@
 package com.joeys.fpsmonitor
 
-import android.view.Choreographer
-import java.util.concurrent.TimeUnit
+import android.app.Application
+import android.content.Context
+import android.content.Intent
+import android.graphics.PixelFormat
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
+import android.view.WindowManager.LayoutParams
+import android.widget.RelativeLayout
+import android.widget.TextView
+import com.joeys.fpsmonitor.modules.Instruments
+import com.joeys.fpsmonitor.modules.fps.FpsWatch
+import com.joeys.fpsmonitor.modules.fps.FpsMonitor
+import java.text.DecimalFormat
 
-class Monitor : Choreographer.FrameCallback {
 
-    private val choreographer = Choreographer.getInstance()
-    private var frames = 0
-    private var frameTimes = 0L
-    private val interval = 500
-    private var fpsWatch: FpsWatch? = null
+object Monitor {
 
-    fun start() {
-        choreographer.postFrameCallback(this)
+    private val core = Core()
+
+
+    //门面模式，隐藏所有细节
+    fun install(application: Application): Core {
+        return core.install(application)
     }
 
-    fun stop() {
-        frames = 0
-        frameTimes = 0L
-        choreographer.removeFrameCallback(this)
-    }
 
-    fun watch(fpsWatch: FpsWatch) {
-        this.fpsWatch = fpsWatch
-    }
+    class Core : ForegroundLifecycleCallback() {
+        private var app: Application? = null
+        private val instruments = mutableListOf<Instruments>(
+            FpsMonitor()
+        )
 
-    override fun doFrame(frameTimeNanos: Long) {
-        val current = TimeUnit.NANOSECONDS.toMillis(frameTimeNanos)
-        if (frameTimes > 0) {
-            frames++
-            val spend = current - frameTimes
-            if (spend > interval) {
-                val fps = frames * 1000 / spend.toDouble()
-                frames = 0
-                frameTimes = 0
-                fpsWatch?.onFps(fps)
+        fun install(application: Application): Core {
+            app = application
+            application.registerActivityLifecycleCallbacks(this)
+            for (instrument in instruments) {
+                instrument.install(application)
             }
-
-        } else {
-            frameTimes = current
+            return this
         }
-        choreographer.postFrameCallback(this)
+
+        override fun onAppForeground() {
+            show()
+        }
+
+        override fun onAppBackground() {
+            stop()
+        }
+
+        fun show() {
+            for (instrument in instruments) {
+                instrument.start()
+            }
+        }
+
+        fun stop() {
+            for (instrument in instruments) {
+                instrument.stop()
+            }
+        }
     }
 }
