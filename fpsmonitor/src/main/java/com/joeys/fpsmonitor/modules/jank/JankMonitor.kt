@@ -2,6 +2,7 @@ package com.joeys.fpsmonitor.modules.jank
 
 import android.app.Application
 import android.os.Looper
+import android.util.Log
 import com.joeys.fpsmonitor.modules.Instruments
 
 class JankMonitor : Instruments {
@@ -22,6 +23,7 @@ class JankMonitor : Instruments {
             },
             onEventJank = { jankTimes, isLongBlock ->
 
+                Log.d("joeys", "onEventJank: $jankTimes  $isLongBlock")
             })
         Looper.getMainLooper().setMessageLogging(jankLooperWatcher)
     }
@@ -32,7 +34,6 @@ class JankMonitor : Instruments {
 
     override fun stop() {
     }
-
 
 
 }
