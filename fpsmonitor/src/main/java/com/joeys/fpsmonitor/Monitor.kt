@@ -17,6 +17,7 @@ import android.widget.TextView
 import com.joeys.fpsmonitor.modules.Instruments
 import com.joeys.fpsmonitor.modules.fps.FpsWatch
 import com.joeys.fpsmonitor.modules.fps.FpsMonitor
+import com.joeys.fpsmonitor.modules.jank.JankMonitor
 import java.text.DecimalFormat
 
 
@@ -24,17 +25,15 @@ object Monitor {
 
     private val core = Core()
 
-
-    //门面模式，隐藏所有细节
     fun install(application: Application): Core {
         return core.install(application)
     }
 
-
     class Core : ForegroundLifecycleCallback() {
         private var app: Application? = null
         private val instruments = mutableListOf<Instruments>(
-            FpsMonitor()
+            FpsMonitor(),
+            JankMonitor()
         )
 
         fun install(application: Application): Core {
