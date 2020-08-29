@@ -6,7 +6,7 @@ import android.util.Printer
 class JankLooperWatcher(
     private val onEventStart: (startTime: Long) -> Unit,
     private val onEventEnd: (endTime: Long) -> Unit,
-    private val onEventJank: (jankTimes: Long, isLongBlock: Boolean) -> Unit
+    internal val onEventJank: (jankTimes: Long, startTime: Long, endTime: Long, isLongBlock: Boolean) -> Unit
 ) : Printer {
 
     private var eventStart = false
@@ -28,9 +28,9 @@ class JankLooperWatcher(
             val eventCostTime: Long = thisEventEndTime - thisEventStartTime
             val eventCostThreadTime: Long = thisEventThreadEndTime - thisEventStartThreadTime
             if (eventCostTime >= longBlockThresholdMillis) {
-                onEventJank(eventCostTime, true)
+                onEventJank(eventCostTime, thisEventStartTime, thisEventEndTime, true)
             } else if (eventCostTime >= shortBlockThresholdMillis) {
-                onEventJank(eventCostTime, false)
+                onEventJank(eventCostTime, thisEventStartTime, thisEventEndTime, false)
             }
             onEventEnd(thisEventEndTime)
         }

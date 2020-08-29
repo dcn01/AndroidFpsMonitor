@@ -11,9 +11,10 @@ class JankMonitor : Instruments {
     private var stackAnalyzer: StackAnalyzer? = null
     private var jankLooperWatcher: JankLooperWatcher? = null
 
+
     override fun install(application: Application) {
         app = application
-        stackAnalyzer = StackAnalyzer()
+        stackAnalyzer = StackAnalyzer(Looper.getMainLooper().thread)
         jankLooperWatcher = JankLooperWatcher(
             onEventStart = {
                 stackAnalyzer?.startAnalysis()
@@ -21,9 +22,16 @@ class JankMonitor : Instruments {
             onEventEnd = {
                 stackAnalyzer?.stopAnalysis()
             },
-            onEventJank = { jankTimes, isLongBlock ->
+            onEventJank = { jankTimes: Long, startTime: Long, endTime: Long, isLongBlock: Boolean ->
+                if (isLongBlock) {
+                    val traces = stackAnalyzer?.getTrace(startTime, endTime)
+                    traces?.forEach {
+                        for (traceElement in it.value) {
+                            Log.d("joeys", "install: ${traceElement.toString()}")
 
-                Log.d("joeys", "onEventJank: $jankTimes  $isLongBlock")
+                        }
+                    }
+                }
             })
         Looper.getMainLooper().setMessageLogging(jankLooperWatcher)
     }
