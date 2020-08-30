@@ -41,14 +41,20 @@ class StackAnalyzer(private val thread: Thread) {
         analyzerHandler.removeCallbacks(mRunnable)
     }
 
-    fun getTrace(startTime: Long, endTime: Long): Map<Long, Array<StackTraceElement>> {
+    fun getTrace(startTime: Long, endTime: Long): Map<Long, List<StackTraceElement>> {
         synchronized(stackTraces) {
             if (stackTraces.size == 0) {
                 return mapOf()
             }
-            return stackTraces.filter {
+            val result = hashMapOf<Long, List<StackTraceElement>>()
+            stackTraces.filter {
                 it.key in startTime..endTime
+            }.forEach {
+                if (!result.containsValue(it.value.asList())) {
+                    result[it.key] = it.value.asList()
+                }
             }
+            return result
         }
     }
 

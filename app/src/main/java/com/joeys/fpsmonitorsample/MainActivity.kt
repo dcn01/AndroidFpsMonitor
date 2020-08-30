@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
     class MyBinder(val screenWidth: Int) : ItemViewBinder<Entity, MyBinder.VH>() {
 
         override fun onBindViewHolder(holder: VH, item: Entity) {
-            Thread.sleep(30)
+//            Thread.sleep(30)
             Glide.with(holder.mIv)
                 .load(item.pic)
                 .into(object : CustomTarget<Drawable>() {

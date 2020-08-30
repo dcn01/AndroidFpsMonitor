@@ -23,14 +23,10 @@ class JankMonitor : Instruments {
                 stackAnalyzer?.stopAnalysis()
             },
             onEventJank = { jankTimes: Long, startTime: Long, endTime: Long, isLongBlock: Boolean ->
-                if (isLongBlock) {
-                    val traces = stackAnalyzer?.getTrace(startTime, endTime)
-                    traces?.forEach {
-                        for (traceElement in it.value) {
-                            Log.d("joeys", "install: ${traceElement.toString()}")
-
-                        }
-                    }
+                val traces = stackAnalyzer?.getTrace(startTime, endTime)
+                traces?.forEach {
+                    val jankInfo = JankInfo(jankTimes,startTime, endTime, it.value)
+                    Log.w("monitor", jankInfo.toString())
                 }
             })
         Looper.getMainLooper().setMessageLogging(jankLooperWatcher)
