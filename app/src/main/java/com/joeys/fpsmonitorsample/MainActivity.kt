@@ -4,6 +4,8 @@ import android.graphics.drawable.Drawable
 import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.MemoryFile
+import android.os.ParcelFileDescriptor
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +62,6 @@ class MainActivity : AppCompatActivity() {
                 Entity(R.drawable.pic8, "pic8")
             )
         recyclerview.adapter = adapter
-
 
         btnJank.setOnClickListener {
             Thread.sleep(600)
