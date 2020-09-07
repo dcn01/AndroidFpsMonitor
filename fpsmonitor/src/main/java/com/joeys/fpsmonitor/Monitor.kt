@@ -20,13 +20,20 @@ import com.joeys.fpsmonitor.modules.fps.FpsMonitor
 import com.joeys.fpsmonitor.modules.jank.JankMonitor
 import java.text.DecimalFormat
 
-
 object Monitor {
 
     private val core = Core()
+    private var fpsLayoutParams: (LayoutParams.() -> Unit)? = null
 
     fun install(application: Application): Core {
+        fpsPosition {
+            gravity = Gravity.TOP
+        }
         return core.install(application)
+    }
+
+    fun fpsPosition(layoutParams: LayoutParams.() -> Unit) {
+        fpsLayoutParams = layoutParams
     }
 
     class Core : ForegroundLifecycleCallback() {
@@ -55,6 +62,12 @@ object Monitor {
 
         fun show() {
             for (instrument in instruments) {
+                fpsLayoutParams?.let {
+                    if (instrument is FpsMonitor) {
+                        instrument.refreshLayout(it)
+                        fpsLayoutParams = null
+                    }
+                }
                 instrument.start()
             }
         }

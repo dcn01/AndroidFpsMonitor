@@ -2,6 +2,7 @@ package com.joeys.fpsmonitor.modules.fps
 
 import android.app.Application
 import android.view.Choreographer
+import android.view.WindowManager
 import androidx.annotation.IntRange
 import com.joeys.fpsmonitor.modules.Instruments
 import java.util.concurrent.TimeUnit
@@ -73,6 +74,13 @@ class FpsMonitor : Choreographer.FrameCallback, Instruments {
             intervalStartTime = current
         }
         choreographer.postFrameCallback(this)
+    }
+
+    fun refreshLayout(fpsLayoutParams: WindowManager.LayoutParams.() -> Unit) {
+        for (fpsWatch in fpsWatch) {
+            if (fpsWatch is FpsDisplayWatcher)
+                fpsWatch.refreshLayout(fpsLayoutParams)
+        }
     }
 
 

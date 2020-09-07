@@ -86,5 +86,9 @@ class FpsDisplayWatcher : FpsWatch {
         return Build.VERSION.SDK_INT < 23 || Settings.canDrawOverlays(app)
     }
 
+    fun refreshLayout(fpsLayoutParams: WindowManager.LayoutParams.() -> Unit) {
+
+    }
+
 
 }
